@@ -9,7 +9,8 @@ private:
 	private:
 		int weight;
 		char symbol;
-		Node* next = NULL;
+		Node* left = NULL;
+		Node* right = NULL;
 
 	public:
 		Node(int w, char s): weight(w), symbol(s) {}
@@ -42,8 +43,7 @@ private:
 		public:
 			QueueNode(Node *roott): root(roott) {};
 			Node* root = NULL;
-			QueueNode* back = NULL;
-			QueueNode* front = NULL;
+			QueueNode* next = NULL;
 		};
 
 		QueueNode* first = NULL;
@@ -65,7 +65,20 @@ private:
 			int counter = 0;
 
 			while(actual != NULL) {
-				if (w_new > actual->root->getWeight()) {
+				
+				if (w_new <= actual->root->getWeight() and counter == 0) {
+						newNode->next = actual;
+					 	first = newNode;
+					 	return;
+				}
+
+
+				if (actual->next == NULL and actual->root->getWeight() <= w_new) {
+						actual->next = newNode;
+					return;
+				}
+
+				if (w_new <= actual->next->root->getWeight()) {
 					 newNode->next = actual->next;
 					 actual->next = newNode;
 					 return;
@@ -76,19 +89,12 @@ private:
 
 			}
 
-			if (counter == 0){
-				newNode->next = first;
-				first = newNode;
-			}else{
-				actual->next = newNode;
-				end = newNode;
-			}
+
 		}
 
 		int remove(){
-			if (first != NULL)
-			{
-				QueueNode* tmp = end;
+			if (first != NULL) {
+				QueueNode* tmp = first;
 				int w = tmp->root->getWeight();
 
 				first = first->next;
@@ -109,25 +115,26 @@ public:
 		return;
 	}
 
-	void tmp(){
-		Queue miCola;
+	// void tmp(){
+	// 	Queue miCola;
 
-		Node* miNodo1 = new Node(1, 'A');
-		Node* miNodo2 = new Node(2, 'B');
-		Node* miNodo3 = new Node(3, 'C');
-		Node* miNodo4 = new Node(4, 'C');
+	// 	Node* miNodo1 = new Node(1, 'A');
+	// 	Node* miNodo2 = new Node(2, 'B');
+	// 	Node* miNodo3 = new Node(3, 'C');
+	// 	Node* miNodo4 = new Node(4, 'C');
 
-		miCola.insert(miNodo2);
-		miCola.insert(miNodo1);
-		miCola.insert(miNodo4);
-		miCola.insert(miNodo3);
+	// 	miCola.insert(miNodo3);
+	// 	miCola.insert(miNodo1);
+	// 	miCola.insert(miNodo4);
+	// 	miCola.insert(miNodo2);
+	// 	miCola.insert(miNodo3);
 
-		cout << miCola.remove() << endl;
-		cout << miCola.remove() << endl;
-		cout << miCola.remove() << endl;
-		cout << miCola.remove() << endl;
-		cout << miCola.remove() << endl;
+	// 	cout << miCola.remove() << endl;
+	// 	cout << miCola.remove() << endl;
+	// 	cout << miCola.remove() << endl;
+	// 	cout << miCola.remove() << endl;
+	// 	cout << miCola.remove() << endl;
 
-	}
+	// }
 	
 };
