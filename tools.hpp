@@ -138,3 +138,82 @@ public:
 	// }
 	
 };
+
+
+
+class Dictionary
+{
+private:
+	class Element
+	{
+	public:
+		char symbol = '\0';
+		int freq = 0;
+	};
+
+	// Cantidad de síbolos diferentes
+	int symbol_len = 0;
+	Element symbols[SYMBOLS];
+
+public:
+
+	void insert(char symb){
+		for (int i = 0; i < symbol_len; ++i){
+
+			if ( symb ==  symbols[i].symbol){
+				symbols[i].freq += 1;
+				return;
+			}
+		}
+
+		symbols[symbol_len].symbol = symb;
+		symbols[symbol_len].freq = 1;
+
+		symbol_len += 1;
+
+	}
+
+	void printme(){
+		for (int i = 0; i < symbol_len; ++i){
+			char tmp = symbols[i].symbol;
+			cout << tmp << "\t" << symbols[i].freq << endl;
+		}
+	}
+	
+};
+
+class ReadData
+{
+/*
+* Objeto que manipula un archivo de
+* texto, lo abre, y le cada 
+* línea
+*/
+protected:
+	string file_name;
+	ifstream text_file;
+public:
+	ReadData(string name) : file_name(name) {
+		cout << "Opening file: " << file_name << endl;
+		text_file.open(file_name, ios::in|ios::binary);
+		cout << "Done!" << endl;
+	} ;
+
+	// Regresa una lína del'
+	// archivo de texto
+	string readLine(){
+		string line;
+
+		if (text_file.is_open()){
+			getline(text_file, line);
+
+			return line;
+		}
+
+		return "";
+	}
+
+	bool closeFile(){
+		text_file.close();
+	}
+};
