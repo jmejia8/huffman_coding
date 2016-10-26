@@ -160,28 +160,39 @@ public:
 
 	}
 
-	void find(Node* root, char symbol, string code, int branch){
-		if (root == NULL){
-			return;
-		}
+	bool find(Node* root, char symbol, string code, int branch, char bin){
+
+		if (root == NULL)
+			return false;
+
+
+		if (code.length() < branch) code += bin;
+		else code[branch] = bin;
+
+		branch++;
+
+
 
 		if (root->getSymbol() == symbol) {
-			cout << root->getSymbol() << "\n";
-			
-			cout << code << endl;
-			exit(0);
-			return;
+			cout << root->getSymbol() << "\t"
+				 << code.substr(0, branch) << endl;
+			return true;
 		}
 
-		code += '0';
-		find(root->getLeft(), symbol, code, branch);
 
-		code += "1";
-		find(root->getRight(), symbol, code, branch);
+
+		if (find(root->getLeft(), symbol, code, branch, '0'))
+			return true;
+
+		if (find(root->getRight(), symbol, code, branch, '1'))
+			return true;
+
+		return false;
+
 	}
 
-	void showme(){
-		find(treeRoot, 'D', "0", 0);
+	void showme(char c){
+		find(treeRoot, c, "", 0, '0');
 	}
 	
 };
@@ -274,6 +285,20 @@ public:
 			getline(text_file, line);
 
 			return line;
+		}
+
+		return "";
+	}
+
+	string getHexChar(){
+		unsigned char x;
+
+		if (text_file >> x) {
+			
+			ostringstream buffer;
+			buffer << hex << (int) x << " ";
+
+			return buffer.str();
 		}
 
 		return "";

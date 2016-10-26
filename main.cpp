@@ -2,9 +2,11 @@
 #include <fstream>
 #include <string>
 #include <typeinfo>
+#include <sstream>
 
 
-#define SYMBOLS 260
+
+#define SYMBOLS 20
 
 #include "tools.hpp"
 
@@ -20,7 +22,10 @@ void huffman (Dictionary dict){
 
 	MyTree.makeMe();
 
-	MyTree.showme();
+	for (int i = 0; i < dict.getSymbolLen(); ++i)
+	{
+		MyTree.showme(dict.getSymbol(i));		
+	}
 }
 
 int main(int argc, char const *argv[])
@@ -29,24 +34,27 @@ int main(int argc, char const *argv[])
 	Dictionary dict;
 
 	// ReadData my_file("files/image.jpg");
-	ReadData my_file("files/test2.txt");
+	ReadData my_file("files/test.txt");
 
 
-	string line = my_file.readLine();
+	string hex_char = my_file.getHexChar();
 
-	while (line.length() != 0) {
+	cout << "Reading file content...\n";
+	
+	while (hex_char.length() != 0) {
 
-		for (int i = 0; i < line.length(); ++i){
-			dict.insert(line[i]);
+		for (int i = 0; i < hex_char.length(); ++i){
+			dict.insert(hex_char[i]);
 		}
 
-		line = my_file.readLine();
+		hex_char = my_file.getHexChar();
 
 	}
 	
 	my_file.closeFile();
 
-	dict.printme();
+
+	// dict.printme();
 
 	huffman(dict);
 
