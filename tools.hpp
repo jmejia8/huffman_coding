@@ -31,6 +31,14 @@ private:
 			right = rightChild;
 		}
 
+		Node* getLeft(){
+			return left;
+		}
+
+		Node* getRight(){
+			return right;
+		}
+
 
 		
 	};
@@ -89,57 +97,101 @@ private:
 
 			}
 
-
 		}
 
-		int remove(){
+		Node* remove(){
 			if (first != NULL) {
 				QueueNode* tmp = first;
 				int w = tmp->root->getWeight();
+
+				Node* root = tmp->root;
 
 				first = first->next;
 
 				delete tmp;
 
-				return w;
+				return root;
 			}
 
 
 
-			return -1;
+			return NULL;
 		}
 	};
 
-public:
-	void insertFather(char name, char childLeft, char childRight, int weight){
-		return;
+	void insertFather(Node* leftChild, Node* rightChild, int weight){
+		Node* newNode = new Node(weight, '\0');
+
+		newNode->setLeft(leftChild);
+		newNode->setRight(rightChild);
+
+		myQueue.insert(newNode);
+
+		treeRoot = newNode;
+
 	}
 
-	// void tmp(){
-	// 	Queue miCola;
+	Queue myQueue;
+	Node* treeRoot;
 
-	// 	Node* miNodo1 = new Node(1, 'A');
-	// 	Node* miNodo2 = new Node(2, 'B');
-	// 	Node* miNodo3 = new Node(3, 'C');
-	// 	Node* miNodo4 = new Node(4, 'C');
+public:
 
-	// 	miCola.insert(miNodo3);
-	// 	miCola.insert(miNodo1);
-	// 	miCola.insert(miNodo4);
-	// 	miCola.insert(miNodo2);
-	// 	miCola.insert(miNodo3);
+	void insertNode(int freq, char symbol){
 
-	// 	cout << miCola.remove() << endl;
-	// 	cout << miCola.remove() << endl;
-	// 	cout << miCola.remove() << endl;
-	// 	cout << miCola.remove() << endl;
-	// 	cout << miCola.remove() << endl;
+		Node* tmp = new Node(freq, symbol);
 
-	// }
+		myQueue.insert(tmp);
+
+	}
+
+	void makeMe(){
+		Node* leftChild  = myQueue.remove();
+		Node* rightChild = myQueue.remove();
+		
+		while (leftChild != NULL  and rightChild != NULL){		
+
+			int weight = leftChild->getWeight() + rightChild->getWeight();
+
+			insertFather(leftChild, rightChild, weight);
+
+			leftChild  = myQueue.remove();
+			rightChild = myQueue.remove();
+		}
+
+	}
+
+	void find(Node* root, char symbol, string code, int branch){
+		if (root == NULL){
+			return;
+		}
+
+		if (root->getSymbol() == symbol) {
+			cout << root->getSymbol() << "\n";
+			
+			cout << code << endl;
+			exit(0);
+			return;
+		}
+
+		code += '0';
+		find(root->getLeft(), symbol, code, branch);
+
+		code += "1";
+		find(root->getRight(), symbol, code, branch);
+	}
+
+	void showme(){
+		find(treeRoot, 'D', "0", 0);
+	}
 	
 };
 
-
+///////////////////////////////////////
+///////////////////////////////////////
+// Implementación de un diccionario
+// para guardar los símbolos
+///////////////////////////////////////
+///////////////////////////////////////
 
 class Dictionary
 {
@@ -179,6 +231,18 @@ public:
 			cout << tmp << "\t" << symbols[i].freq << endl;
 		}
 	}
+
+	int getSymbolLen(){
+		return symbol_len;
+	}
+
+	char getSymbol(int index){
+		return symbols[index].symbol;
+	}
+
+	int getFreq(int index){
+		return symbols[index].freq;
+	}
 	
 };
 
@@ -197,6 +261,8 @@ public:
 		cout << "Opening file: " << file_name << endl;
 		text_file.open(file_name, ios::in|ios::binary);
 		cout << "Done!" << endl;
+
+		text_file >> noskipws;
 	} ;
 
 	// Regresa una lína del'
