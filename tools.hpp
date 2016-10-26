@@ -1,5 +1,88 @@
 using namespace std;
 
+///////////////////////////////////////
+///////////////////////////////////////
+// Implementación de un diccionario
+// para guardar los símbolos
+///////////////////////////////////////
+///////////////////////////////////////
+
+class Dictionary
+{
+private:
+	class Element
+	{
+	public:
+		char symbol = '\0';
+		int freq = 0;
+		string code;
+	};
+
+	// Cantidad de síbolos diferentes
+	int symbol_len = 0;
+	Element symbols[SYMBOLS];
+
+public:
+
+	void insert(char symb){
+		for (int i = 0; i < symbol_len; ++i){
+
+			if ( symb ==  symbols[i].symbol){
+				symbols[i].freq += 1;
+				return;
+			}
+		}
+
+		symbols[symbol_len].symbol = symb;
+		symbols[symbol_len].freq = 1;
+
+		symbol_len += 1;
+
+	}
+
+	void printme(){
+		for (int i = 0; i < symbol_len; ++i){
+			char tmp = symbols[i].symbol;
+			cout << tmp << "\t" << symbols[i].freq << "\t\t"
+				 << symbols[i].code << endl;
+		}
+	}
+
+	int getSymbolLen(){
+		return symbol_len;
+	}
+
+	char getSymbol(int index){
+		return symbols[index].symbol;
+	}
+
+	int getFreq(int index){
+		return symbols[index].freq;
+	}
+
+	string getCode(char s){
+		for (int i = 0; i < symbol_len; ++i){
+
+			if ( s ==  symbols[i].symbol){
+				return symbols[i].code;
+			}
+		}
+
+		return "";
+	}
+
+	void setCode(char symb, string code){
+		for (int i = 0; i < symbol_len; ++i){
+
+			if ( symb ==  symbols[i].symbol){
+				symbols[i].code = code;
+				return;
+			}
+		}
+	}
+	
+};
+
 class Tree
 {
 
@@ -160,10 +243,10 @@ public:
 
 	}
 
-	bool find(Node* root, char symbol, string code, int branch, char bin){
+	void find(Node* root, string code, int branch, char bin, Dictionary* dict){
 
 		if (root == NULL)
-			return false;
+			return;
 
 
 		if (code.length() < branch) code += bin;
@@ -173,89 +256,28 @@ public:
 
 
 
-		if (root->getSymbol() == symbol) {
-			cout << root->getSymbol() << "\t"
-				 << code.substr(0, branch) << endl;
-			return true;
+		if (root->getSymbol() != '\0') {
+			dict->setCode(root->getSymbol(), code.substr(0, branch));
+			return;
 		}
 
 
 
-		if (find(root->getLeft(), symbol, code, branch, '0'))
-			return true;
+		find(root->getLeft(), code, branch, '0', dict);
 
-		if (find(root->getRight(), symbol, code, branch, '1'))
-			return true;
+		find(root->getRight(), code, branch, '1', dict);
 
-		return false;
 
 	}
 
-	void showme(char c){
-		find(treeRoot, c, "", 0, '0');
+	void saveCodes(Dictionary* dict){
+		find(treeRoot, "", 0, '0', dict);
 	}
-	
+
+
 };
 
-///////////////////////////////////////
-///////////////////////////////////////
-// Implementación de un diccionario
-// para guardar los símbolos
-///////////////////////////////////////
-///////////////////////////////////////
 
-class Dictionary
-{
-private:
-	class Element
-	{
-	public:
-		char symbol = '\0';
-		int freq = 0;
-	};
-
-	// Cantidad de síbolos diferentes
-	int symbol_len = 0;
-	Element symbols[SYMBOLS];
-
-public:
-
-	void insert(char symb){
-		for (int i = 0; i < symbol_len; ++i){
-
-			if ( symb ==  symbols[i].symbol){
-				symbols[i].freq += 1;
-				return;
-			}
-		}
-
-		symbols[symbol_len].symbol = symb;
-		symbols[symbol_len].freq = 1;
-
-		symbol_len += 1;
-
-	}
-
-	void printme(){
-		for (int i = 0; i < symbol_len; ++i){
-			char tmp = symbols[i].symbol;
-			cout << tmp << "\t" << symbols[i].freq << endl;
-		}
-	}
-
-	int getSymbolLen(){
-		return symbol_len;
-	}
-
-	char getSymbol(int index){
-		return symbols[index].symbol;
-	}
-
-	int getFreq(int index){
-		return symbols[index].freq;
-	}
-	
-};
 
 class ReadData
 {
@@ -269,9 +291,9 @@ protected:
 	ifstream text_file;
 public:
 	ReadData(string name) : file_name(name) {
-		cout << "Opening file: " << file_name << endl;
+		// cout << "Opening file: " << file_name << endl;
 		text_file.open(file_name, ios::in|ios::binary);
-		cout << "Done!" << endl;
+		// cout << "Done!" << endl;
 
 		text_file >> noskipws;
 	} ;
