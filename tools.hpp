@@ -21,10 +21,12 @@ private:
 	// Cantidad de síbolos diferentes
 	int symbol_len = 0;
 	Element symbols[SYMBOLS];
+	int f_size = 0;
 
 public:
 
 	void insert(char symb){
+		f_size++;
 		for (int i = 0; i < symbol_len; ++i){
 
 			if ( symb ==  symbols[i].symbol){
@@ -56,6 +58,21 @@ public:
 		return symbols[index].symbol;
 	}
 
+	char getSymbolByCode(string code){
+		for (int i = 0; i < symbol_len; ++i){
+
+			if ( code ==  symbols[i].code){
+				return symbols[i].symbol;
+			}
+		}
+
+		return '\0';
+	}
+
+	string getCodeIndex (int index){
+		return symbols[index].code;
+	}
+
 	int getFreq(int index){
 		return symbols[index].freq;
 	}
@@ -79,6 +96,10 @@ public:
 				return;
 			}
 		}
+	}
+
+	int size(){
+		return f_size;
 	}
 	
 };
@@ -324,6 +345,40 @@ public:
 		}
 
 		return "";
+	}
+
+	char getChar(){
+		char tmp;
+		
+		if (text_file >> tmp ) {
+			return tmp;
+		}
+
+		return '\0';
+
+	}
+
+	string getBin(char _X){
+		stringstream _itoa;
+
+		int _size = sizeof(unsigned char) * 8;
+
+		for(unsigned _s = 0; _s < _size - 1; ++_s)
+		{
+			_itoa << ((_X >> (_size - 1 - _s)) & 1);
+		}
+
+		return _itoa.str();
+	}
+	
+	string getBinString(){
+		char c;
+		string bin;
+		while(text_file >> c){
+			bin += getBin(c);
+		}
+
+		return bin;
 	}
 
 	bool closeFile(){
