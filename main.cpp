@@ -33,7 +33,7 @@ void huffman_encode (Dictionary dict, string file_name){
 	cout << "\nCompressing..." << endl;
 
 	ReadData input(file_name);
-	ofstream output(file_name + ".compressed.bin", ios::binary);
+	ofstream output(file_name + ".compressed", ios::binary);
 
 	output << noskipws;
 
@@ -111,9 +111,9 @@ void huffman_encode (Dictionary dict, string file_name){
 	}
 
 
-	cout <<  "\nCopression succsessful :D " << endl;
-	cout << "\nThe compression ration is: " << (float) total / ((float) dict.size() * 8.0)  * 100.0  << "%" << endl;
-	cout << "Output file size: " << (total/8.0) << "bytes"<< endl;
+	cout <<  "\nListo " << endl;
+	cout << "\nPorcentaje de compresión: " << (float) total / ((float) dict.size() * 8.0)  * 100.0  << "%" << endl;
+	cout << "Tamaño de archivo de salida: " << (total/8.0) << "bytes"<< endl;
 
 	input.closeFile();
 	output.close();
@@ -128,18 +128,20 @@ void huffman_decode(string input_name){
 	string line = input.readLine();
 
 	if (line != KEY_DECODE) {
-		cout << "Invalid file format :(" << endl;
+		cout << "Error: Formato incorrecto." << endl;
 		exit(0);
 	}
+
+	cout << "\nDescomprimiendo";
 
 	// file name decoded
 	string output_name = input.readLine();
 
 	Dictionary dict;
 
+
 	// huffman coding
 	char symbol;
-	cout << "leyendo el arbol" << endl;
 	do {
 
 		// read char ascii code
@@ -161,19 +163,15 @@ void huffman_decode(string input_name){
 
 	} while(1);
 
-	cout << "fin leyendo arbol" << endl;
-
-	cout << "leyendo linea" << endl;
-
+	cout << ".";
 	line = input.getBinString();
+	cout << ".";
 	input.closeFile();
 
-	cout << "fin leyendo linea" << endl;
 	string code;
 
-	cout << "guardando el original" << endl;
 
-	ofstream output(output_name+".txt");
+	ofstream output(output_name);
 
 
 	string aux;
@@ -196,42 +194,76 @@ void huffman_decode(string input_name){
 
 	}
 
+	cout << ".\n\n";
+
 	output.close();
 
-	cout << "Todo bien chido";
+	cout << "Descompresión exitosa." << endl;
 
 	return;
+}
+
+
+void menu(){
+	cout << "=================================" << endl;
+	cout << "|\t¿Qué desea hacer?" << endl
+		 << "|\t 1. Comprimir." << endl
+		 << "|\t 2. descomprimir." << endl
+		 << "=================================" << endl
+		 << "\nElige: ";
 }
 
 int main(int argc, char const *argv[])
 {
 
+	menu();
+
+	int option;
+	string file_name;
+	
+	cin >> option;
+	
 	Dictionary dict;
-	string file_name = "files/test2.txt";
-
-	ReadData my_file(file_name);
 
 
-	char letter = my_file.getChar();
+	if (option == 1){
+			cout << "Nombre del archivo: ";
+			cin >> file_name;
+			ReadData my_file(file_name);
 
-	cout << "Reading file content...\n";
+			char letter = my_file.getChar();
 
-	while (letter != '\0') {
+			// cout << "Reading file content...\n";
 
-		dict.insert(letter);
+			while (letter != '\0') {
 
-		letter = my_file.getChar();
+				dict.insert(letter);
+
+				letter = my_file.getChar();
+
+			}
+			
+			my_file.closeFile();
+
+
+			huffman_encode(dict, file_name);
+			return 0;
+	}
+
+	if( option ==  2){
+
+			cout << "Nombre del archivo: ";
+			cin >> file_name;
+			huffman_decode(file_name);
+
+			return 0;
 
 	}
-	
-	my_file.closeFile();
+
+	cout << "Opción no valída, diculpe." << endl;
 
 
-	huffman_encode(dict, file_name);
-	cout << endl << "========================" << endl;
-	cout << endl << "========================" << endl;
-	cout << endl << "========================" << endl;
-	huffman_decode(file_name + ".compressed.bin");
+
 
 
 	return 0;
